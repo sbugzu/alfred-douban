@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string>com.sbugzu.douban</string>
+	<key>category</key>
+	<string>Internet</string>
+	<key>connections</key>
+	<dict>
+		<key>12C6B0E2-6106-40E8-9523-2A177E61BE1C</key>
+		<array/>
+		<key>1FF1B02B-111E-4844-9E59-6E02D4788F40</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>12C6B0E2-6106-40E8-9523-2A177E61BE1C</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string>sbugzu</string>
+	<key>description</key>
+	<string></string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>Douban</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>browser</key>
+				<string></string>
+				<key>spaces</key>
+				<string></string>
+				<key>url</key>
+				<string>{query}</string>
+				<key>utf8</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.openurl</string>
+			<key>uid</key>
+			<string>12C6B0E2-6106-40E8-9523-2A177E61BE1C</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<true/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>escaping</key>
+				<integer>68</integer>
+				<key>keyword</key>
+				<string>movie</string>
+				<key>queuedelaycustom</key>
+				<integer>3</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<false/>
+				<key>queuedelaymode</key>
+				<integer>1</integer>
+				<key>queuemode</key>
+				<integer>2</integer>
+				<key>runningsubtext</key>
+				<string>Searching...</string>
+				<key>script</key>
+				<string># encoding: utf-8
+#
+# Copyright (c) 2020 sbugzu &lt;https://github.com/sbugzu/alfred-douban&gt;
+#
+# MIT Licence. See http://opensource.org/licenses/MIT
+#
+# Created on 2020-01-20
+#
+
+import sys
+import json
+import urllib2
+
+from workflow import Workflow
+
+API = "https://movie.douban.com/j/subject_suggest?q="
+HEADER = {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:72.0) Gecko/20100101 Firefox/72.0',
+        'Host': 'movie.douban.com'
+        }
+
+def main(wf):
+    query = "{query}"
+    url = '%s%s' % (API, query)
+    # url = "https://movie.douban.com/j/subject_suggest?q=avatar"
+    data = None
+
+    req = urllib2.Request(url, data, HEADER)
+    res = urllib2.urlopen(req)
+    items = json.loads(res.read())
+
+    for item in items:
+        if item.has_key("year"):
+            title  = '%s(%s)' % (item["title"], item["year"])
+        else:
+            title  = '%s' % (item["title"])
+        sub_title = item["sub_title"]
+        id = item["id"]
+        item_url = item["url"]
+        # print title
+        wf.add_item(title=title,
+                subtitle=sub_title,
+                arg=item_url,
+                valid=True,
+                icon="./movie.png")
+
+    wf.send_feedback()
+
+if __name__ == u"__main__":
+    wf = Workflow()
+    sys.exit(wf.run(main))</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string></string>
+				<key>title</key>
+				<string>Search movie</string>
+				<key>type</key>
+				<integer>3</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>1FF1B02B-111E-4844-9E59-6E02D4788F40</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string></string>
+	<key>uidata</key>
+	<dict>
+		<key>12C6B0E2-6106-40E8-9523-2A177E61BE1C</key>
+		<dict>
+			<key>xpos</key>
+			<integer>410</integer>
+			<key>ypos</key>
+			<integer>180</integer>
+		</dict>
+		<key>1FF1B02B-111E-4844-9E59-6E02D4788F40</key>
+		<dict>
+			<key>xpos</key>
+			<integer>240</integer>
+			<key>ypos</key>
+			<integer>180</integer>
+		</dict>
+	</dict>
+	<key>webaddress</key>
+	<string>https://github.com/sbugzu/alfred-douban</string>
+</dict>
+</plist>
