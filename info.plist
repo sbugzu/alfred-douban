@@ -104,7 +104,9 @@ HEADER = {
 
 def main(wf):
     query = "{query}"
-    url = '%s%s' % (API, query)
+    urlcode = urllib2.quote(query)
+
+    url = '%s%s' % (API, urlcode)
     # url = "https://movie.douban.com/j/subject_suggest?q=avatar"
     data = None
 
